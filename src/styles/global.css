@@ -1,27 +1,35 @@
-:root, /* Default to light theme */
+:root,
+/* Default to light theme */
 html[data-theme="light"] {
   --primary-bg: #ffffff;
   --secondary-bg: #f0f2f5;
   --tertiary-bg: #e9ecef;
   --primary-text: #1f2937;
   --secondary-text: #4b5563;
-  --accent-color: #FB7299; /* Pink accent, can be adjusted */
+  --accent-color: #FB7299;
+  /* Pink accent, can be adjusted */
   --accent-text: #ffffff;
   --border-color: #d1d5db;
-  --border-color-light: #e5e7eb; /* Lighter border for some elements */
-  --border-color-dark: #4b5563;  /* Darker border for light theme if needed */
+  --border-color-light: #e5e7eb;
+  /* Lighter border for some elements */
+  --border-color-dark: #4b5563;
+  /* Darker border for light theme if needed */
   --link-color: #007bff;
   --link-hover-color: #0056b3;
   --success-color: #28a745;
   --error-color: #dc3545;
   --warning-color: #ffc107;
   --info-color: #17a2b8;
-  --selected-bg: #FB7299; /* Selected item background */
-  --selected-text: #ffffff; /* Text color for selected items */
-  --hover-bg: rgba(251, 114, 153, 0.1); /* Hover background with accent */
+  --selected-bg: #FB7299;
+  /* Selected item background */
+  --selected-text: #ffffff;
+  /* Text color for selected items */
+  --hover-bg: rgba(251, 114, 153, 0.1);
+  /* Hover background with accent */
   --button-bg: var(--accent-color);
   --button-text: var(--accent-text);
-  --button-hover-bg: #e06387; /* Darker accent for hover */
+  --button-hover-bg: #e06387;
+  /* Darker accent for hover */
   --input-bg: #ffffff;
   --input-border: var(--border-color);
   --input-text: var(--primary-text);
@@ -32,29 +40,46 @@ html[data-theme="light"] {
 }
 
 html[data-theme="dark"] {
-  --primary-bg: #1a1b1f; /* Darker main background */
-  --secondary-bg: #24262b; /* Slightly lighter for secondary elements */
-  --tertiary-bg: #2d2f39;  /* Even lighter for cards, sidebars etc. */
-  --primary-text: #f0f2f5; /* Light primary text */
-  --secondary-text: #a0aec0; /* Softer secondary text */
-  --accent-color: #FB7299; /* Pink accent, consistent */
+  --primary-bg: #1a1b1f;
+  /* Darker main background */
+  --secondary-bg: #24262b;
+  /* Slightly lighter for secondary elements */
+  --tertiary-bg: #2d2f39;
+  /* Even lighter for cards, sidebars etc. */
+  --primary-text: #f0f2f5;
+  /* Light primary text */
+  --secondary-text: #a0aec0;
+  /* Softer secondary text */
+  --accent-color: #FB7299;
+  /* Pink accent, consistent */
   --accent-text: #ffffff;
-  --border-color: #4a5568; /* Darker border */
-  --border-color-light: #5a5a5e; /* For elements needing a slightly lighter border in dark mode */
-  --border-color-dark: #1e1e1e;  /* For elements needing a very dark border in dark mode */
-  --link-color: #63b3ed; /* Lighter blue for links in dark mode */
+  --border-color: #4a5568;
+  /* Darker border */
+  --border-color-light: #5a5a5e;
+  /* For elements needing a slightly lighter border in dark mode */
+  --border-color-dark: #1e1e1e;
+  /* For elements needing a very dark border in dark mode */
+  --link-color: #63b3ed;
+  /* Lighter blue for links in dark mode */
   --link-hover-color: #90cdf4;
-  --success-color: #48bb78; /* Adjusted success color */
-  --error-color: #f56565;   /* Adjusted error color */
-  --warning-color: #f6e05e; /* Adjusted warning color */
-  --info-color: #4fd1c5;    /* Adjusted info color */
-  --selected-bg: #FB7299; /* Selected item background */
+  --success-color: #48bb78;
+  /* Adjusted success color */
+  --error-color: #f56565;
+  /* Adjusted error color */
+  --warning-color: #f6e05e;
+  /* Adjusted warning color */
+  --info-color: #4fd1c5;
+  /* Adjusted info color */
+  --selected-bg: #FB7299;
+  /* Selected item background */
   --selected-text: #ffffff;
-  --hover-bg: rgba(251, 114, 153, 0.15); /* Slightly more visible hover in dark */
+  --hover-bg: rgba(251, 114, 153, 0.15);
+  /* Slightly more visible hover in dark */
   --button-bg: var(--accent-color);
   --button-text: var(--accent-text);
   --button-hover-bg: #e06387;
-  --input-bg: #2d2f39; /* Dark input background */
+  --input-bg: #2d2f39;
+  /* Dark input background */
   --input-border: #4a5568;
   --input-text: var(--primary-text);
   --disabled-bg: #2d3748;
@@ -110,4 +135,49 @@ html.web-fs-active .app {
   padding: 0 !important;
 }
 
-/* Add more global styles or utility classes as needed */ 
+/* Skeleton and Loading Animations */
+:root,
+html[data-theme="light"] {
+  --skeleton-bg: #f2f2f2;
+  --skeleton-highlight: #e6e6e6;
+}
+
+html[data-theme="dark"] {
+  --skeleton-bg: #2d2f39;
+  --skeleton-highlight: #3a3d4a;
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      var(--skeleton-bg) 25%,
+      var(--skeleton-highlight) 37%,
+      var(--skeleton-bg) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.fade-in {
+  animation: img-fade-in 0.4s ease-out forwards;
+}
+
+@keyframes img-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -230,12 +230,17 @@
   const startY = ref(0);
   const currentY = ref(0);
   const startX = ref(0);
+  const pendingDragIndex = ref(-1);
+  const pendingDragType = ref<'streamer' | null>(null);
+  const dragStartPoint = ref<{ x: number; y: number } | null>(null);
+  const dragPrepTimer = ref<number | null>(null);
   const justAddedIds = ref<string[]>([]);
   const draggedFromFolder = ref(false);
   const sourceFolderId = ref<string | null>(null);
   const dragSessionId = ref(0);
   const animationTimeout = ref<number | null>(null);
   const DRAG_MIN_PX = 6; // 小于该阈值视为点击/误触，取消拖拽
+  const LONG_PRESS_MS = 220;
   
   // 拖拽到文件夹相关状态
   const dragOverFolderId = ref<string | null>(null); // 当前悬停的文件夹ID
@@ -596,9 +601,32 @@
     }
     emit('selectAnchor', streamer);
   };
+
+  const clearLongPressTimer = () => {
+    if (dragPrepTimer.value !== null) {
+      clearTimeout(dragPrepTimer.value);
+      dragPrepTimer.value = null;
+    }
+  };
+
+  const resetPendingDrag = () => {
+    pendingDragIndex.value = -1;
+    pendingDragType.value = null;
+    dragStartPoint.value = null;
+  };
+
+  const clearDragPreparation = () => {
+    clearLongPressTimer();
+    resetPendingDrag();
+  };
   
   function safeCancelDrag() {
-    if (!isDragging.value) return;
+    clearDragPreparation();
+    if (!isDragging.value) {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp as any);
+      return;
+    }
     followStore.rollbackTransaction();
     isDragging.value = false;
     draggedIndex.value = -1;
@@ -611,6 +639,23 @@
     document.removeEventListener('mouseup', handleMouseUp as any);
   }
 
+  const startStreamerDrag = (index: number, startPoint: { x: number; y: number }) => {
+    const item = listItems.value[index];
+    if (!item || item.type !== 'streamer') return;
+    clearDragPreparation();
+    const streamer = item.data;
+    draggedStreamerKey.value = `${streamer.platform}:${streamer.id}`;
+    draggedFromFolder.value = false;
+    followStore.beginTransaction();
+    isDragging.value = true;
+    draggedIndex.value = index;
+    draggedItemType.value = 'streamer';
+    startY.value = startPoint.y;
+    startX.value = startPoint.x;
+    currentY.value = startPoint.y; 
+    dragSessionId.value++;
+  };
+
   const handleMouseDown = (e: MouseEvent, index: number) => {
     if (e.button !== 0) return;
     // 若上一次拖拽未正常结束，先强制取消并回滚
@@ -622,30 +667,33 @@
       return;
     }
     
-    // 记录正在拖拽的主播键值
-    const streamer = item.data;
-    draggedStreamerKey.value = `${streamer.platform}:${streamer.id}`;
-    draggedFromFolder.value = false;
-    // 主列表拖拽也开启事务，以便误触时可回滚
-    followStore.beginTransaction();
-    
-    isDragging.value = true;
-    draggedIndex.value = index;
-    draggedItemType.value = 'streamer';
+    e.preventDefault();
+    clearDragPreparation();
     startY.value = e.clientY;
     startX.value = e.clientX;
-    currentY.value = e.clientY; 
-    dragSessionId.value++;
+    pendingDragIndex.value = index;
+    pendingDragType.value = 'streamer';
+    dragStartPoint.value = { x: e.clientX, y: e.clientY };
+    dragPrepTimer.value = window.setTimeout(() => {
+      const point = dragStartPoint.value || { x: e.clientX, y: e.clientY };
+      startStreamerDrag(index, point);
+    }, LONG_PRESS_MS);
     
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp as any);
-    
-    e.preventDefault();
   };
   
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging.value || draggedIndex.value === -1) return;
-    
+    if (!isDragging.value || draggedIndex.value === -1) {
+      if (pendingDragIndex.value !== -1 && pendingDragType.value === 'streamer') {
+        const movedDist = Math.hypot(e.clientX - startX.value, e.clientY - startY.value);
+        if (movedDist >= DRAG_MIN_PX) {
+          startStreamerDrag(pendingDragIndex.value, dragStartPoint.value || { x: e.clientX, y: e.clientY });
+        }
+      }
+      if (!isDragging.value) return;
+    }
+
     currentY.value = e.clientY;
     
     // 如果正在拖拽主播项，检查是否悬停在文件夹上
@@ -722,7 +770,12 @@
   };
   
   const handleMouseUp = (ev: MouseEvent) => {
-    if (!isDragging.value) return;
+    clearDragPreparation();
+    if (!isDragging.value) {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp as any);
+      return;
+    }
     
     // 如果正在拖拽主播项且悬停在文件夹上，将主播移入文件夹
     if (draggedItemType.value === 'streamer' && draggedStreamerKey.value && dragOverFolderId.value) {
@@ -807,6 +860,8 @@
       draggedStreamerKey.value = null;
       draggedFromFolder.value = false;
       sourceFolderId.value = null;
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp as any);
     }
   };
   
@@ -815,6 +870,7 @@
     if (event.button !== 0) return;
     // 若上一次拖拽未正常结束，先强制取消并回滚
     if (isDragging.value) safeCancelDrag();
+    clearDragPreparation();
     
     // 记录正在拖拽的主播键值
     draggedStreamerKey.value = `${streamer.platform}:${streamer.id}`;
@@ -868,6 +924,7 @@
 
   // 失焦保护：拖拽中若窗口失焦，回滚事务并重置状态，避免数据丢失
   function handleWindowBlur() {
+    clearDragPreparation();
     if (!isDragging.value) return;
     followStore.rollbackTransaction();
     isDragging.value = false;
@@ -878,7 +935,7 @@
     draggedFromFolder.value = false;
     sourceFolderId.value = null;
     document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener('mouseup', handleMouseUp as any);
   }
   window.addEventListener('blur', handleWindowBlur);
   document.addEventListener('visibilitychange', () => {

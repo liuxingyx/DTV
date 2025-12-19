@@ -39,6 +39,13 @@
   align-items: center;
   justify-content: flex-start; /* 保持内容靠左，状态胶囊以 margin-left 自动右对齐 */
   width: 100%; /* 占满父级，使右侧胶囊推到最右侧 */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.streamer-item-content * {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .item-content {

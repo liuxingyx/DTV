@@ -197,6 +197,7 @@ const handleToggleInternalExpand = () => {
   overflow: hidden;
   transition: height 0.4s cubic-bezier(0.33, 0.66, 0.66, 1);
   will-change: height;
+  transform: translateZ(0);
   box-sizing: border-box;
 }
 

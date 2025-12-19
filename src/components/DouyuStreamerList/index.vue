@@ -19,14 +19,22 @@
           @click="goToPlayer(streamer.rid)"
         >
           <div class="card-preview-revised">
-            <img :src="streamer.roomSrc || 'https://via.placeholder.com/320x180.png?text=No+Image'" :alt="streamer.roomName" class="preview-image-revised" />
+            <SmoothImage 
+              :src="streamer.roomSrc || 'https://via.placeholder.com/320x180.png?text=No+Image'" 
+              :alt="streamer.roomName" 
+              class="preview-image-revised" 
+            />
             <span class="viewers-count-overlay">
               <svg class="viewers-icon-revised" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
               {{ streamer.hn }} 
             </span>
           </div>
           <div class="card-info-footer-revised">
-            <img :src="streamer.avatar || 'https://via.placeholder.com/40.png?text=N/A'" :alt="streamer.nickname" class="streamer-avatar-revised" />
+            <SmoothImage 
+              :src="streamer.avatar || 'https://via.placeholder.com/40.png?text=N/A'" 
+              :alt="streamer.nickname" 
+              class="streamer-avatar-revised" 
+            />
             <div class="text-details-revised">
               <h3 class="room-title-revised" :title="streamer.roomName">{{ streamer.roomName }}</h3>
               <p class="nickname-revised" :title="streamer.nickname">{{ streamer.nickname }}</p>
@@ -46,6 +54,7 @@
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLiveData } from './composables/useLiveData'
+import SmoothImage from '../Common/SmoothImage.vue'
 
 const props = defineProps<{
   categoryType: 'cate2' | 'cate3';
@@ -181,6 +190,9 @@ const goToPlayer = (roomId: string) => {
   position: relative; 
   scrollbar-width: thin; 
   scrollbar-color: var(--scrollbar-thumb-bg, #444) var(--scrollbar-track-bg, #18181b);
+  /* Optimization: isolate this area from layout/paint during sibling animations */
+  contain: paint layout;
+  content-visibility: auto;
 }
 :root[data-theme="light"] .live-grid-scroll-area {
   scrollbar-color: var(--scrollbar-thumb-bg-light, #adb5bd) var(--scrollbar-track-bg-light, #e9ecef);
@@ -249,8 +261,6 @@ const goToPlayer = (roomId: string) => {
 .preview-image-revised {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
 .viewers-count-overlay {

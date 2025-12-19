@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <motion.div
     class="folder-item"
     :data-folder-id="folder.id"
     :class="{ 
@@ -8,12 +8,13 @@
       'is-drag-over': isDragOver,
       'can-accept-drop': canAcceptDrop
     }"
-    @mousedown="handleMouseDown"
+    @mousedown="handleHeaderMouseDown"
+    @mouseup="handleHeaderMouseUp"
     @contextmenu.prevent="handleContextMenu"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <div class="folder-header" @click="toggleExpand">
+    <div class="folder-header" @click="handleToggleClick">
       <svg 
         class="folder-icon" 
         :class="{ 'is-expanded': folder.expanded }"
@@ -31,38 +32,78 @@
       </svg>
       <span class="folder-name">{{ folder.name }}</span>
       <span class="folder-count">({{ folder.streamerIds.length }})</span>
-      <svg 
-        class="expand-icon" 
-        :class="{ 'is-expanded': folder.expanded }"
-        xmlns="http://www.w3.org/2000/svg" 
-        width="12" 
-        height="12" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        stroke-width="2.5" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"
+      <motion.span
+        class="expand-icon"
+        :animate="{ rotate: folder.expanded ? 180 : 0 }"
+        :transition="{ duration: 0.2, ease: [0.25, 0.8, 0.4, 1] }"
       >
-        <polyline points="6 9 12 15 18 9"></polyline>
-      </svg>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="12" 
+          height="12" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </motion.span>
     </div>
-    
-    <Transition
-      @before-enter="handleFolderBeforeEnter"
-      @enter="handleFolderEnter"
-      @after-enter="handleFolderAfterEnter"
-      @before-leave="handleFolderBeforeLeave"
-      @leave="handleFolderLeave"
-      @after-leave="handleFolderAfterLeave"
-    >
-      <div v-if="folder.expanded && folderItems.length > 0" class="folder-content" :class="{ 'disable-pointer': globalDragging }">
+    <AnimatePresence>
+      <motion.div
+        v-if="folder.expanded && folderItems.length > 0"
+        class="folder-content"
+        :class="{ 'disable-pointer': globalDragging }"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        :variants="{
+          hidden: { height: 0, opacity: 0 },
+          visible: { 
+            height: 'auto', 
+            opacity: 1,
+            transition: {
+              height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+              opacity: { duration: 0.2 },
+              staggerChildren: 0.025,
+              delayChildren: 0.015
+            }
+          },
+          exit: { 
+            height: 0, 
+            opacity: 0,
+            transition: {
+              height: { duration: 0.18, ease: [0.64, 0, 0.78, 0] },
+              opacity: { duration: 0.12 },
+              staggerChildren: 0.015,
+              staggerDirection: -1
+            }
+          }
+        }"
+      >
         <ul class="folder-streamers-list">
-          <li
+          <motion.li
             v-for="streamer in folderItems"
             :key="`${streamer.platform}:${streamer.id}`"
             class="folder-streamer-item"
             :class="getStreamerItemClass(streamer)"
+            :variants="{
+              hidden: { opacity: 0, y: -6, scale: 0.98 },
+              visible: { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1,
+                transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] }
+              },
+              exit: { 
+                opacity: 0, 
+                scale: 0.98,
+                transition: { duration: 0.12 }
+              }
+            }"
             @click.stop="handleClick(streamer)"
             @mousedown.stop="(e) => handleFolderStreamerMouseDown(streamer, e)"
             @mouseup.stop="handleFolderStreamerMouseUp"
@@ -76,15 +117,16 @@
               :proxyBase="proxyBase"
               @clickItem="(s) => emit('selectAnchor', s)"
             />
-          </li>
+          </motion.li>
         </ul>
-      </div>
-    </Transition>
-  </div>
+      </motion.div>
+    </AnimatePresence>
+  </motion.div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { AnimatePresence, motion } from 'motion-v';
 import type { FollowedStreamer } from '../../platforms/common/types';
 import type { FollowFolder } from '../../store/followStore';
 import StreamerItem from './StreamerItem.vue';
@@ -146,14 +188,70 @@ const folderItems = computed(() => {
   return sortStreamersByStatus(result);
 });
 
-const toggleExpand = () => {
-  emit('toggleExpand', props.folder.id);
+const toggleExpand = () => emit('toggleExpand', props.folder.id);
+
+const LONG_PRESS_MS = 220;
+const MOVE_THRESHOLD_PX = 6;
+let headerPressTimer: number | null = null;
+let headerLongPressTriggered = false;
+let headerDragStarted = false;
+let headerStartPoint: { x: number; y: number } | null = null;
+
+const clearHeaderPress = () => {
+  if (headerPressTimer !== null) {
+    clearTimeout(headerPressTimer);
+    headerPressTimer = null;
+  }
 };
 
-const handleMouseDown = (e: MouseEvent) => {
-  if (e.button === 0) {
+const cleanupHeaderListeners = () => {
+  document.removeEventListener('mousemove', handleHeaderMouseMove);
+  document.removeEventListener('mouseup', handleHeaderMouseUp);
+};
+
+const handleHeaderMouseMove = (e: MouseEvent) => {
+  if (!headerStartPoint || headerDragStarted) return;
+  const movedDist = Math.hypot(e.clientX - headerStartPoint.x, e.clientY - headerStartPoint.y);
+  if (movedDist >= MOVE_THRESHOLD_PX) {
+    headerDragStarted = true;
+    clearHeaderPress();
     emit('dragStart', props.folder.id, e);
+    headerStartPoint = null;
+    cleanupHeaderListeners();
   }
+};
+
+const handleHeaderMouseDown = (e: MouseEvent) => {
+  if (e.button !== 0 || props.globalDragging) return;
+  e.preventDefault();
+  headerLongPressTriggered = false;
+  headerDragStarted = false;
+  headerStartPoint = { x: e.clientX, y: e.clientY };
+  clearHeaderPress();
+  cleanupHeaderListeners();
+  document.addEventListener('mousemove', handleHeaderMouseMove);
+  document.addEventListener('mouseup', handleHeaderMouseUp);
+  headerPressTimer = window.setTimeout(() => {
+    headerLongPressTriggered = true;
+    headerDragStarted = true;
+    emit('dragStart', props.folder.id, e);
+    headerStartPoint = null;
+    cleanupHeaderListeners();
+  }, LONG_PRESS_MS);
+};
+
+const handleHeaderMouseUp = () => {
+  clearHeaderPress();
+  headerStartPoint = null;
+  cleanupHeaderListeners();
+};
+
+const handleToggleClick = () => {
+  if (headerLongPressTriggered) {
+    headerLongPressTriggered = false;
+    return;
+  }
+  toggleExpand();
 };
 
 const handleContextMenu = (e: MouseEvent) => {
@@ -176,15 +274,22 @@ const handleMouseEnter = () => {
 };
 
 const handleMouseLeave = () => {
+  clearHeaderPress();
+  headerStartPoint = null;
+  cleanupHeaderListeners();
   if (props.canAcceptDrop) {
     emit('dragLeave');
   }
 };
 
 // 长按触发拖动，避免单击立即进入拖动
-const LONG_PRESS_MS = 250;
+const LONG_PRESS_MS_FOL = 220;
+const MOVE_THRESHOLD_PX_FOL = 6;
 let longPressTimer: number | null = null;
 let longPressTriggered = false;
+let longPressDragStarted = false;
+let longPressStartPoint: { x: number; y: number } | null = null;
+let longPressStreamer: FollowedStreamer | null = null;
 
 const clearLongPress = () => {
   if (longPressTimer !== null) {
@@ -193,18 +298,51 @@ const clearLongPress = () => {
   }
 };
 
+const cleanupFolderStreamerListeners = () => {
+  document.removeEventListener('mousemove', handleFolderStreamerMouseMove);
+  document.removeEventListener('mouseup', handleFolderStreamerMouseUp);
+};
+
+const handleFolderStreamerMouseMove = (event: MouseEvent) => {
+  if (!longPressStartPoint || longPressDragStarted) return;
+  const movedDist = Math.hypot(event.clientX - longPressStartPoint.x, event.clientY - longPressStartPoint.y);
+  if (movedDist >= MOVE_THRESHOLD_PX_FOL) {
+    longPressDragStarted = true;
+    longPressTriggered = true;
+    clearLongPress();
+    if (longPressStreamer) {
+      emit('streamerDragStart', longPressStreamer, event);
+    }
+    longPressStartPoint = null;
+    cleanupFolderStreamerListeners();
+  }
+};
+
 const handleFolderStreamerMouseDown = (streamer: FollowedStreamer, event: MouseEvent) => {
   if (props.globalDragging) return;
+  event.preventDefault();
   longPressTriggered = false;
+  longPressDragStarted = false;
+  longPressStartPoint = { x: event.clientX, y: event.clientY };
+  longPressStreamer = streamer;
   clearLongPress();
+  cleanupFolderStreamerListeners();
+  document.addEventListener('mousemove', handleFolderStreamerMouseMove);
+  document.addEventListener('mouseup', handleFolderStreamerMouseUp);
   longPressTimer = window.setTimeout(() => {
     longPressTriggered = true;
+    longPressDragStarted = true;
     emit('streamerDragStart', streamer, event);
-  }, LONG_PRESS_MS);
+    longPressStartPoint = null;
+    cleanupFolderStreamerListeners();
+  }, LONG_PRESS_MS_FOL);
 };
 
 const handleFolderStreamerMouseUp = () => {
   clearLongPress();
+  longPressStartPoint = null;
+  longPressStreamer = null;
+  cleanupFolderStreamerListeners();
 };
 
 const getStreamerItemClass = (streamer: FollowedStreamer) => {
@@ -215,68 +353,24 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   };
 };
 
-const TRANSITION_DURATION = 220;
-const TRANSITION_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
-
-const applyTransition = (el: HTMLElement) => {
-  el.style.transition = `height ${TRANSITION_DURATION}ms ${TRANSITION_EASING}, opacity ${TRANSITION_DURATION}ms ${TRANSITION_EASING}`;
-};
-
-const clearTransition = (el: HTMLElement) => {
-  el.style.transition = '';
-  el.style.height = '';
-  el.style.opacity = '';
-  el.style.overflow = '';
-};
-
-const handleFolderBeforeEnter = (el: Element) => {
-  const element = el as HTMLElement;
-  element.style.height = '0px';
-  element.style.opacity = '0';
-  element.style.overflow = 'hidden';
-};
-
-const handleFolderEnter = (el: Element) => {
-  const element = el as HTMLElement;
-  applyTransition(element);
-  void element.offsetHeight;
-  element.style.height = `${element.scrollHeight}px`;
-  element.style.opacity = '1';
-};
-
-const handleFolderAfterEnter = (el: Element) => {
-  clearTransition(el as HTMLElement);
-};
-
-const handleFolderBeforeLeave = (el: Element) => {
-  const element = el as HTMLElement;
-  element.style.height = `${element.scrollHeight}px`;
-  element.style.opacity = '1';
-  element.style.overflow = 'hidden';
-};
-
-const handleFolderLeave = (el: Element) => {
-  const element = el as HTMLElement;
-  applyTransition(element);
-  void element.offsetHeight;
-  element.style.height = '0px';
-  element.style.opacity = '0';
-};
-
-const handleFolderAfterLeave = (el: Element) => {
-  clearTransition(el as HTMLElement);
-};
 </script>
 
 <style scoped>
 .folder-item {
   position: relative;
   margin-bottom: 8px;
-  border-radius: 14px;
-  background: rgba(34, 34, 38, 0.96);
-  border: 1px solid rgba(96, 98, 112, 0.32);
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.18);
   overflow: hidden;
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.folder-item * {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .folder-item.is-dragging {
@@ -290,23 +384,28 @@ const handleFolderAfterLeave = (el: Element) => {
 
 .folder-item.is-drag-over {
   border-color: rgba(125, 211, 252, 0.6);
-  background: rgba(125, 211, 252, 0.15);
-  box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.3);
-  transform: translateY(-2px);
+  background: rgba(125, 211, 252, 0.1);
+  box-shadow: 0 10px 40px -18px rgba(125, 211, 252, 0.45);
+  transform: translateY(-1px);
 }
 
 .folder-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 9px 12px;
   cursor: pointer;
   user-select: none;
-  transition: background 0.2s ease;
+  background: rgba(255, 255, 255, 0.03);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .folder-header:hover {
-  background: rgba(52, 53, 60, 0.96);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.folder-header:active {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .folder-icon {
@@ -325,7 +424,7 @@ const handleFolderAfterLeave = (el: Element) => {
   flex: 1;
   font-weight: 600;
   font-size: 13px;
-  color: rgba(226, 232, 240, 0.94);
+  color: rgba(226, 232, 240, 0.9);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -333,25 +432,34 @@ const handleFolderAfterLeave = (el: Element) => {
 
 .folder-count {
   font-size: 12px;
-  color: rgba(148, 163, 184, 0.7);
+  color: rgba(148, 163, 184, 0.75);
   margin-left: 4px;
 }
 
 .expand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 12px;
   height: 12px;
   color: rgba(148, 163, 184, 0.7);
-  transition: transform 0.2s ease;
   flex-shrink: 0;
 }
 
-.expand-icon.is-expanded {
-  transform: rotate(180deg);
+.expand-icon svg {
+  width: 12px;
+  height: 12px;
 }
 
 .folder-content {
-  padding: 4px 8px 8px;
-  border-top: 1px solid rgba(96, 98, 112, 0.2);
+  padding: 6px 8px 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  overflow: hidden;
+  will-change: height, opacity;
+  /* Rendering isolation for fluidity */
+  contain: paint layout;
+  content-visibility: auto;
+  transform: translateZ(0); 
 }
 
 .folder-streamers-list {
@@ -382,8 +490,12 @@ const handleFolderAfterLeave = (el: Element) => {
 }
 
 :root[data-theme="light"] .folder-item {
-  background: #f4f7fd;
+  background: transparent;
   border-color: rgba(209, 217, 234, 0.7);
+}
+
+:root[data-theme="light"] .folder-header {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 :root[data-theme="light"] .folder-header:hover {
@@ -418,7 +530,11 @@ const handleFolderAfterLeave = (el: Element) => {
 
 :root[data-theme="light"] .folder-item.is-drag-over {
   border-color: rgba(114, 147, 255, 0.6);
-  background: rgba(114, 147, 255, 0.15);
-  box-shadow: 0 0 0 2px rgba(114, 147, 255, 0.3);
+  background: rgba(114, 147, 255, 0.12);
+  box-shadow: 0 10px 40px -18px rgba(114, 147, 255, 0.35);
+}
+
+:root[data-theme="light"] .folder-content {
+  border-top-color: rgba(209, 217, 234, 0.65);
 }
 </style>

@@ -257,6 +257,8 @@ defineExpose({
   min-height: 200px;
   overflow: hidden;
   transition: max-height 0.4s cubic-bezier(0.33, 0.66, 0.66, 1), background-color 0.3s ease, color 0.3s ease;
+  will-change: max-height;
+  transform: translateZ(0);
   width: 100%;
 }
 
