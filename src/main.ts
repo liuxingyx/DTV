@@ -4,6 +4,7 @@ import App from './App.vue';
 import router from './router';
 import { useFollowStore } from './store/followStore'; 
 import { useThemeStore } from './stores/theme';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 const app = createApp(App);
 const pinia = createPinia();

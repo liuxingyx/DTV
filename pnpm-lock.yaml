@@ -41,6 +41,9 @@ importers:
       vue-router:
         specifier: ^4.5.1
         version: 4.5.1(vue@3.5.18(typescript@5.6.3))
+      vue-virtual-scroller:
+        specifier: ^2.0.0-beta.8
+        version: 2.0.0-beta.8(vue@3.5.18(typescript@5.6.3))
       xgplayer:
         specifier: ^3.0.23
         version: 3.0.23(core-js@3.46.0)
@@ -646,6 +649,9 @@ packages:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  mitt@2.1.0:
+    resolution: {integrity: sha512-ILj2TpLiysu2wkBbWjAmww7TkZb65aiQO+DkVdUTBpBXq+MHYiETENkKFMtsJZX1Lf4pe4QOrTSjIfUwN5lRdg==}
+
   motion-dom@12.23.12:
     resolution: {integrity: sha512-RcR4fvMCTESQBD/uKQe49D5RUeDOokkGRmz4ceaJKDBgHYtZtntC/s2vLvY38gqGaytinij/yi3hMcWVcEF5Kw==}
 
@@ -774,6 +780,16 @@ packages:
       '@vue/composition-api':
         optional: true
 
+  vue-observe-visibility@2.0.0-alpha.1:
+    resolution: {integrity: sha512-flFbp/gs9pZniXR6fans8smv1kDScJ8RS7rEpMjhVabiKeq7Qz3D9+eGsypncjfIyyU84saU88XZ0zjbD6Gq/g==}
+    peerDependencies:
+      vue: ^3.0.0
+
+  vue-resize@2.0.0-alpha.1:
+    resolution: {integrity: sha512-7+iqOueLU7uc9NrMfrzbG8hwMqchfVfSzpVlCMeJQe4pyibqyoifDNbKTZvwxZKDvGkB+PdFeKvnGZMoEb8esg==}
+    peerDependencies:
+      vue: ^3.0.0
+
   vue-router@4.5.1:
     resolution: {integrity: sha512-ogAF3P97NPm8fJsE4by9dwSYtDwXIY1nFY9T6DyQnGHd1E2Da94w9JIolpe42LJGIl0DwOHBi8TcRPlPGwbTtw==}
     peerDependencies:
@@ -784,6 +800,11 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue-virtual-scroller@2.0.0-beta.8:
+    resolution: {integrity: sha512-b8/f5NQ5nIEBRTNi6GcPItE4s7kxNHw2AIHLtDp+2QvqdTjVN0FgONwX9cr53jWRgnu+HRLPaWDOR2JPI5MTfQ==}
+    peerDependencies:
+      vue: ^3.2.0
 
   vue@3.5.18:
     resolution: {integrity: sha512-7W4Y4ZbMiQ3SEo+m9lnoNpV9xG7QVMLa+/0RFwwiAVkeYoyGXqWE85jabU4pllJNUzqfLShJ5YLptewhCWUgNA==}
@@ -1292,6 +1313,8 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.2
 
+  mitt@2.1.0: {}
+
   motion-dom@12.23.12:
     dependencies:
       motion-utils: 12.23.6
@@ -1396,6 +1419,14 @@ snapshots:
     dependencies:
       vue: 3.5.18(typescript@5.6.3)
 
+  vue-observe-visibility@2.0.0-alpha.1(vue@3.5.18(typescript@5.6.3)):
+    dependencies:
+      vue: 3.5.18(typescript@5.6.3)
+
+  vue-resize@2.0.0-alpha.1(vue@3.5.18(typescript@5.6.3)):
+    dependencies:
+      vue: 3.5.18(typescript@5.6.3)
+
   vue-router@4.5.1(vue@3.5.18(typescript@5.6.3)):
     dependencies:
       '@vue/devtools-api': 6.6.4
@@ -1406,6 +1437,13 @@ snapshots:
       '@volar/typescript': 2.4.15
       '@vue/language-core': 2.2.12(typescript@5.6.3)
       typescript: 5.6.3
+
+  vue-virtual-scroller@2.0.0-beta.8(vue@3.5.18(typescript@5.6.3)):
+    dependencies:
+      mitt: 2.1.0
+      vue: 3.5.18(typescript@5.6.3)
+      vue-observe-visibility: 2.0.0-alpha.1(vue@3.5.18(typescript@5.6.3))
+      vue-resize: 2.0.0-alpha.1(vue@3.5.18(typescript@5.6.3))
 
   vue@3.5.18(typescript@5.6.3):
     dependencies:

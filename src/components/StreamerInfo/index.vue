@@ -71,8 +71,10 @@
   box-sizing: border-box;
   position: relative;
   color: var(--primary-text, rgba(244, 247, 255, 0.96));
-  background: linear-gradient(160deg, rgba(26, 28, 38, 0.95), rgba(16, 18, 27, 0.9));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   overflow: hidden;
   margin-bottom: 0;
   border-bottom-left-radius: 0;
@@ -83,12 +85,7 @@
 
 .streamer-info::before,
 .streamer-info::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.45;
-  border-radius: inherit;
+  display: none;
 }
 
 .streamer-info::before {
@@ -463,20 +460,8 @@
 
   :root[data-theme="light"] .streamer-info {
     color: var(--primary-text-light, #1f2937);
-    background: linear-gradient(150deg, rgba(249, 251, 255, 0.97), rgba(233, 238, 252, 0.94));
-    border-bottom: 1px solid rgba(189, 200, 224, 0.5);
-  }
-
-  :root[data-theme="light"] .streamer-info::before {
-    content: '';
-    background: radial-gradient(115% 80% at -8% -12%, rgba(171, 196, 255, 0.2), transparent 72%);
-    opacity: 0.35;
-  }
-
-  :root[data-theme="light"] .streamer-info::after {
-    content: '';
-    background: radial-gradient(110% 70% at 100% 115%, rgba(255, 190, 215, 0.16), transparent 78%);
-    opacity: 0.28;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
   }
 
   :root[data-theme="light"] .streamer-name {

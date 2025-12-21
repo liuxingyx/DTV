@@ -28,7 +28,7 @@ defineProps<{
   overflow-x: auto;
   background: transparent;
   flex-shrink: 0;
-  padding: 12px 0 6px;
+  padding: 6px 0 6px;
   transition: all 0.2s ease;
 }
 
@@ -73,6 +73,19 @@ defineProps<{
   box-shadow: none;
 }
 
+.cate1-item.selected {
+  /* theme-aware selected state uses glass background */
+}
+
+:root[data-theme="dark"] .cate1-item {
+  color: #cbd5d1;
+}
+
+:root[data-theme="dark"] .cate1-item.selected {
+  background: rgba(255, 255, 255, 0.18);
+  color: #f6fbf7;
+}
+
 .cate1-name {
   display: inline-block;
   letter-spacing: 0.2px;
@@ -80,9 +93,5 @@ defineProps<{
 
 .cate1-list-container::-webkit-scrollbar {
   height: 0;
-}
-
-.cate1-item.selected {
-  /* theme-aware selected state uses glass background */
 }
 </style>

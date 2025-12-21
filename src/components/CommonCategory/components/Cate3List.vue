@@ -1,6 +1,5 @@
 <template>
   <div v-if="!isLoading && (cate3List.length > 0 || hasAllOption)" class="cate3-list">
-    <!-- 全部选项 -->
     <div
       class="cate3-item"
       :class="{ active: selectedCate3Id === null || selectedCate3Id === 'all' }"
@@ -8,8 +7,6 @@
     >
       全部
     </div>
-    
-    <!-- 其他三级分类 -->
     <div
       v-for="cate3 in cate3List"
       :key="cate3.id"
@@ -25,7 +22,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Category3 } from '../types'
+
+type Category3 = {
+  id: string
+  name: string
+}
 
 const props = defineProps<{
   cate3List: Category3[]
@@ -37,14 +38,11 @@ const emit = defineEmits<{
   (e: 'select', cate3: Category3): void
 }>()
 
-// 计算属性：是否显示全部选项
 const hasAllOption = computed(() => {
   return props.cate3List && props.cate3List.length > 0
 })
 
-// 选择"全部"
 const selectAll = () => {
-  // 创建一个特殊的"全部"分类对象
   const allCategory: Category3 = {
     id: 'all',
     name: '全部'
@@ -96,11 +94,11 @@ const selectAll = () => {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  color: var(--cate3-loading-text-dark, rgba(255, 255, 255, 0.5)); 
+  color: var(--cate3-loading-text-dark, rgba(255, 255, 255, 0.5));
   font-size: 13px;
 }
 
 :root[data-theme="light"] .loading-cate3 {
-  color: var(--main-text-secondary-light, #495057); 
+  color: var(--main-text-secondary-light, #495057);
 }
 </style>

@@ -55,8 +55,8 @@ const emit = defineEmits<{
 
 const CARD_ACTUAL_HEIGHT = 36;
 const GRID_VERTICAL_GAP = 12;
-const CONTENT_PADDING_BOTTOM = 8;
-const GRID_INTERNAL_PADDING_BOTTOM = 18;
+const CONTENT_PADDING_BOTTOM = 6;
+const GRID_INTERNAL_PADDING_BOTTOM = 12;
 
 const TARGET_CONTENT_HEIGHT_FOR_ONE_ROW = CARD_ACTUAL_HEIGHT + GRID_INTERNAL_PADDING_BOTTOM + CONTENT_PADDING_BOTTOM;
 const TARGET_CONTENT_HEIGHT_FOR_TWO_ROWS = (2 * CARD_ACTUAL_HEIGHT + GRID_VERTICAL_GAP) + GRID_INTERNAL_PADDING_BOTTOM + CONTENT_PADDING_BOTTOM - 14;
@@ -177,7 +177,7 @@ const handleToggleInternalExpand = () => {
 
 <style scoped>
 .cate2-container {
-  padding: 10px 24px 8px;
+  padding: 10px 24px 6px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -189,7 +189,7 @@ const handleToggleInternalExpand = () => {
 .cate2-content {
   position: relative;
   height: 0;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   overflow: hidden;
   transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: height;
@@ -200,7 +200,7 @@ const handleToggleInternalExpand = () => {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 12px;
   justify-content: flex-start;
-  padding-bottom: 20px;
+  padding-bottom: 12px;
 }
 
 .cate2-card {
@@ -244,10 +244,19 @@ const handleToggleInternalExpand = () => {
   /* theme-aware selected state uses glass background */
 }
 
+:root[data-theme="dark"] .cate2-card {
+  color: #cbd5d1;
+}
+
+:root[data-theme="dark"] .cate2-card.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #f6fbf7;
+}
+
 .expand-button {
   position: relative;
   align-self: center;
-  margin-top: 6px;
+  margin-top: 2px;
   display: inline-flex;
   align-items: center;
   gap: 6px;

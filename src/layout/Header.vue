@@ -28,7 +28,7 @@
     <div class="spacer" />
 
     <div class="header-actions" :class="{ 'header-actions--windows': shouldShowWindowsControls }">
-      <div class="search-container" data-tauri-drag-region>
+      <div class="search-container" ref="searchContainerRef" data-tauri-drag-region>
         <div class="search-box">
           <input
             v-model="searchQuery"
@@ -179,6 +179,7 @@ const proxify = (url?: string | null): string | null => {
 const effectiveTheme = computed(() => themeStore.getEffectiveTheme());
 
 const detectedPlatform = ref<string | null>(null);
+const searchContainerRef = ref<HTMLElement | null>(null);
 const isWindowsPlatform = computed(() => {
   const name = detectedPlatform.value?.toLowerCase() ?? '';
   return name.startsWith('win');
@@ -198,6 +199,14 @@ onMounted(async () => {
     }
   }
 });
+
+const handleDocumentMouseDown = (event: MouseEvent) => {
+  const container = searchContainerRef.value;
+  if (!container) return;
+  if (event.target instanceof Node && !container.contains(event.target)) {
+    showResults.value = false;
+  }
+};
 
 const currentPlatform = computed<Platform>(() => {
   const name = route.name as string | undefined;
@@ -293,10 +302,12 @@ watch(() => route.path, () => {
 
 onMounted(() => {
   window.addEventListener('resize', () => updateHighlightForKey(null));
+  document.addEventListener('mousedown', handleDocumentMouseDown);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', () => updateHighlightForKey(null));
+  document.removeEventListener('mousedown', handleDocumentMouseDown);
 });
 
 const placeholderText = computed(() => {
@@ -596,7 +607,7 @@ const tryEnterRoom = (roomId: string) => {
 }
 
 .search-container {
-  width: 480px;
+  width: 400px;
   max-width: 100%;
   position: relative;
 }
@@ -611,14 +622,14 @@ const tryEnterRoom = (roomId: string) => {
   padding: 0 20px;
   border: 1px solid var(--glass-border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  height: 52px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  height: 44px;
+  box-shadow: none;
 }
 
 .search-box:focus-within {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 4px rgba(191, 255, 0, 0.1), 0 8px 32px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
+  border-color: var(--glass-border);
+  box-shadow: none;
+  transform: none;
 }
 
 .search-input {
@@ -755,12 +766,12 @@ const tryEnterRoom = (roomId: string) => {
 }
 
 .platform-pill {
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 18px;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -768,8 +779,8 @@ const tryEnterRoom = (roomId: string) => {
 }
 
 .platform-pill img {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 
@@ -789,11 +800,11 @@ const tryEnterRoom = (roomId: string) => {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 8px;
-  border-radius: 20px;
+  padding: 6px;
+  border-radius: 26px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+  box-shadow: none;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
 }
@@ -803,7 +814,7 @@ const tryEnterRoom = (roomId: string) => {
   top: 6px;
   bottom: 6px;
   left: 0;
-  border-radius: 12px;
+  border-radius: 18px;
   background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
   box-shadow: 0 8px 30px rgba(0,0,0,0.08);
   transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1), width 0.28s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.18s ease;

@@ -11,11 +11,11 @@
       class="live-list-section" 
       v-if="selectedCategoryInfo"
     >
-      <LiveList 
-        :categoryType="selectedCategoryInfo.type"
-        :categoryId="selectedCategoryInfo.id"
-        :categoryName="selectedCategoryInfo.name"
-        :key="selectedCategoryInfo.type + '-' + selectedCategoryInfo.id" 
+      <CommonStreamerList
+        :douyu-category="selectedCategoryInfo"
+        platformName="douyu"
+        playerRouteName="douyuPlayer"
+        :key="selectedCategoryInfo.type + '-' + selectedCategoryInfo.id"
       />
     </div>
     <!-- 加载状态显示 (for default category) -->
@@ -37,7 +37,7 @@ defineOptions({
 })
 
 import CategoryList from '../components/DouyuCategory/index.vue';
-import LiveList from '../components/DouyuStreamerList/index.vue'; 
+import CommonStreamerList from '../components/CommonStreamerList/index.vue'; 
 import { invoke } from '@tauri-apps/api/core'
 import type { CategorySelectedEvent } from '../components/DouyuCategory/types';
 

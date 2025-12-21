@@ -9,17 +9,16 @@
     <!-- 正常显示分类内容 -->
     <template v-if="!isLoading && cate1List.length > 0">
       <Cate1List
-        :cate1-list="cate1List"
-        :selected-cate1-id="selectedCate1Id"
-        @select="selectCate1"
+        :cate1-list="cate1ListForCommon"
+        :selected-cate1-href="selectedCate1Href"
+        @select="handleCate1SelectFromCommon"
       />
       <Cate2Grid
         v-if="sortedCate2List.length > 0"
-        :cate2-list="sortedCate2List"
-        :selected-cate2-id="selectedCate2Id"
+        :cate2-list="cate2ListForCommon"
+        :selected-cate2-href="selectedCate2Href"
         :is-expanded="isExpanded"
-        :has-more-rows="hasMoreRows"
-        @select="handleCate2SelectAndCollapse"
+        @select="handleCate2SelectFromCommon"
         @toggle-expand="toggleExpand"
       />
       <Cate3List
@@ -40,14 +39,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch, nextTick, ref, onBeforeUnmount } from 'vue'
-import Cate1List from './components/Cate1List.vue'
-import Cate2Grid from './components/Cate2Grid.vue'
-import Cate3List from './components/Cate3List.vue'
+import { onMounted, watch, nextTick, ref, onBeforeUnmount, computed } from 'vue'
+import Cate1List from '../CommonCategory/components/Cate1List.vue'
+import Cate2Grid from '../CommonCategory/components/Cate2Grid.vue'
+import Cate3List from '../CommonCategory/components/Cate3List.vue'
 import { useCategories } from './composables/useCategories'
 import { useSelection } from './composables/useSelection'
 import { useExpand } from './composables/useExpand'
 import type { CategorySelectedEvent, Category2 } from './types'
+import type { Category1 as CommonCategory1, Category2 as CommonCategory2 } from '../../platforms/common/categoryTypes.ts'
 
 const emit = defineEmits<{
   (e: 'category-selected', category: CategorySelectedEvent): void
@@ -73,6 +73,7 @@ const {
 
 const {
   cate1List,
+  cate2List,
   isLoadingCate3,
   fetchCategories,
   fetchThreeCate,
@@ -82,9 +83,52 @@ const {
 
 const {
   isExpanded,
-  hasMoreRows,
   toggleExpand,
 } = useExpand(sortedCate2List)
+
+const cate1ListForCommon = computed(() => {
+  return cate1List.value.map((cate1) => ({
+    title: cate1.cate1Name,
+    href: String(cate1.cate1Id),
+    subcategories: cate2List.value
+      .filter((cate2) => cate2.cate1Id === cate1.cate1Id)
+      .map((cate2) => ({
+        title: cate2.cate2Name,
+        href: String(cate2.cate2Id),
+      })),
+  }))
+})
+
+const cate2ListForCommon = computed(() => {
+  return sortedCate2List.value.map((cate2) => ({
+    title: cate2.cate2Name,
+    href: String(cate2.cate2Id),
+  }))
+})
+
+const selectedCate1Href = computed(() => {
+  return selectedCate1Id.value !== null ? String(selectedCate1Id.value) : null
+})
+
+const selectedCate2Href = computed(() => {
+  return selectedCate2Id.value !== null ? String(selectedCate2Id.value) : null
+})
+
+const handleCate1SelectFromCommon = (cate1: CommonCategory1) => {
+  const cate1Id = Number(cate1.href)
+  if (!Number.isNaN(cate1Id)) {
+    selectCate1(cate1Id)
+  }
+}
+
+const handleCate2SelectFromCommon = (cate2: CommonCategory2) => {
+  const cate2Id = Number(cate2.href)
+  if (Number.isNaN(cate2Id)) return
+  const match = sortedCate2List.value.find((item) => item.cate2Id === cate2Id)
+  if (match) {
+    handleCate2SelectAndCollapse(match)
+  }
+}
 
 // New wrapper function for C2 click to handle auto-collapse
 const handleCate2SelectAndCollapse = (cate2: Category2) => {
@@ -242,7 +286,6 @@ defineExpose({
   handleCate3Click,
   toggleExpand,
   isExpanded,
-  hasMoreRows,
   reloadCategories
 })
 </script>

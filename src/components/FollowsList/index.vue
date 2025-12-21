@@ -1,7 +1,9 @@
 <template>
   <div class="follow-list">
     <div class="list-header">
-      <h3 class="header-title">关注列表</h3>
+      <h3 class="header-title" aria-label="关注列表">
+        <UsersRound class="header-icon" aria-hidden="true" :stroke-width="1.9" />
+      </h3>
       <div class="header-actions">
           <button 
             v-if="!isRefreshing"
@@ -44,9 +46,7 @@
             title="展开关注列表"
           >
             <span class="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
-              </svg>
+              <ListCollapse aria-hidden="true" :stroke-width="1.9" />
             </span>
           </button>
         </div>
@@ -199,6 +199,7 @@
   import FolderContextMenu from './FolderContextMenu.vue';
   import { useImageProxy } from './useProxy';
   import { useFollowStore, type FollowListItem } from '../../store/followStore';
+  import { ListCollapse, UsersRound } from 'lucide-vue-next';
   import { motion } from 'motion-v';
 
   const expandBtnRef = ref<HTMLButtonElement | null>(null)
@@ -1260,13 +1261,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
-  padding: 0 8px;
-  border-radius: 8px;
-  background: rgba(0, 218, 198, 0.12);
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--secondary-text);
 }
 :root[data-theme="light"] .progress-with-spinner {
-  background: rgba(80, 130, 255, 0.10);
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #475569;
 }
 /* 去掉进度文本自身背景，统一由容器提供 */
 .progress-with-spinner .progress-label {

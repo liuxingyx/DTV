@@ -17,11 +17,7 @@
       @request-refresh-details="handleRefreshDetails"
       @request-player-reload="handlePlayerReload" />
     <div v-else-if="roomId && isLoadingDetails" class="loading-details loading-player">
-      <div class="spinner">
-        <span class="spinner-track"></span>
-        <span class="spinner-head"></span>
-        <span class="spinner-dot"></span>
-      </div>
+      <LoadingDots />
     </div>
     <div v-else-if="detailsError" class="invalid-room">
       <p>错误: {{ detailsError }}</p>
@@ -38,6 +34,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import MainPlayer from '../components/player/index.vue';
+import LoadingDots from '../components/Common/LoadingDots.vue';
 import { useFollowStore } from '../store/followStore';
 import type { FollowedStreamer } from '../platforms/common/types';
 import { Platform } from '../platforms/common/types';

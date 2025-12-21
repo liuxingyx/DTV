@@ -21,11 +21,7 @@
           <p>请从首页选择一个直播间开始观看。</p>
         </div>
         <div v-else-if="isLoadingStream" class="loading-player">
-          <div class="spinner">
-            <span class="spinner-track"></span>
-            <span class="spinner-head"></span>
-            <span class="spinner-dot"></span>
-          </div>
+          <LoadingDots />
         </div>
         <div v-else-if="isOfflineError" class="offline-player">
           <!-- Display StreamerInfo if room details are available -->
@@ -144,6 +140,7 @@ import { getBilibiliStreamConfig } from '../../platforms/bilibili/playerHelper';
 
 import StreamerInfo from '../StreamerInfo/index.vue';
 import DanmuList from '../DanmuList/index.vue';
+import LoadingDots from '../Common/LoadingDots.vue';
 
 import { invoke } from '@tauri-apps/api/core';
 import { useImageProxy } from '../FollowsList/useProxy';

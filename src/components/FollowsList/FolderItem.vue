@@ -62,7 +62,7 @@
         :initial="{ height: 0, opacity: 0 }"
         :animate="{ height: 'auto', opacity: 1 }"
         :exit="{ height: 0, opacity: 0 }"
-        :transition="{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }"
+        :transition="{ type: 'tween', duration: 0.24, ease: [0.22, 0.61, 0.36, 1] }"
         >
         <motion.div
           class="folder-hover-highlight"
@@ -73,15 +73,11 @@
           :style="{ borderRadius: '12px', minHeight: '38px' }"
         />
         <ul class="folder-streamers-list">
-          <motion.li
+          <li
             v-for="(streamer, index) in folderItems"
             :key="`${streamer.platform}:${streamer.id}`"
             class="folder-streamer-item"
             :class="getStreamerItemClass(streamer)"
-            :initial="false"
-            :animate="{ y: 0 }"
-            :exit="{ y: -4, opacity: 0 }"
-            :transition="{ duration: 0.16, ease: [0.2, 0.8, 0.2, 1] }"
             :ref="(el) => setFolderItemRef(index, el)"
             @mouseenter="handleFolderItemMouseEnter(index)"
             @click.stop="handleClick(streamer)"
@@ -97,7 +93,7 @@
               :proxyBase="proxyBase"
               @clickItem="(s) => emit('selectAnchor', s)"
             />
-          </motion.li>
+          </li>
         </ul>
       </motion.div>
     </AnimatePresence>
@@ -521,6 +517,7 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   padding: 10px 12px 16px;
   position: relative;
   overflow: hidden;
+  will-change: height;
 }
 
 .folder-hover-highlight {

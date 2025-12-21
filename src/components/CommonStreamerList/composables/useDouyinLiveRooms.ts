@@ -82,8 +82,9 @@ export function useDouyinLiveRooms(
           rooms.value = newRooms;
         }
 
-        hasMore.value = response.has_more === true;
-        currentOffset.value = response.next_offset ?? (offset + newRooms.length);
+        hasMore.value = Boolean(response.has_more);
+        const nextOffset = response.next_offset ?? (offset + newRooms.length);
+        currentOffset.value = typeof nextOffset === 'string' ? Number(nextOffset) : nextOffset;
       } else {
         console.warn('[useDouyinLiveRoomsCommon] No rooms array in response or invalid structure (expected response.rooms to be an array).');
         if (!isLoadMore) rooms.value = [];
@@ -115,6 +116,9 @@ export function useDouyinLiveRooms(
     const tokenFetched = await fetchAndSetMsToken();
     if (tokenFetched && currentMsToken.value) {
       await fetchRooms(0, false);
+      if (hasMore.value && rooms.value.length > 0 && rooms.value.length <= 15) {
+        await fetchRooms(currentOffset.value, true);
+      }
     } else {
       if (!error.value) error.value = 'Failed to initialize session. Cannot load rooms.';
       isLoading.value = false;
