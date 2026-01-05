@@ -142,52 +142,49 @@
 }
 
 .nickname {
-  font-weight: 700;
-  color: var(--primary-text);
+  font-weight: 600;
+  color: rgba(29, 29, 31, 0.86);
   font-size: 13px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   transition: color 0.2s ease;
 }
 
 .secondary-row {
-  font-size: 11px;
-  color: var(--secondary-text);
+  font-size: 11.5px;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 500;
   margin-top: 3px;
-  opacity: 0.8;
+  opacity: 0.9;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-:root[data-theme="dark"] .nickname {
-  color: #e7eee9;
-}
-
-:root[data-theme="dark"] .secondary-row {
-  color: #a8b5ac;
-  opacity: 0.86;
-}
-
 .streamer-item-content:hover .nickname {
-  color: #f8fafc;
+  color: rgba(29, 29, 31, 0.92);
+}
+
+:root[data-theme="dark"] .nickname {
+  color: rgba(229, 231, 235, 0.86);
+}
+
+:root[data-theme="dark"] .streamer-item-content:hover .nickname {
+  color: rgba(229, 231, 235, 0.92);
 }
 
 .streamer-item-content:hover .secondary-row {
-  color: #e2e8f0;
+  color: rgba(29, 29, 31, 0.9);
   opacity: 1;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
 }
 
-:root[data-theme="light"] .streamer-item-content:hover .nickname {
-  color: #0f172a;
-}
-
-:root[data-theme="light"] .streamer-item-content:hover .secondary-row {
-  color: #334155;
+:root[data-theme="dark"] .streamer-item-content:hover .secondary-row {
+  color: rgba(229, 231, 235, 0.95);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
 }
 
 .status-container {

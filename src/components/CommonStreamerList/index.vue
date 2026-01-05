@@ -290,7 +290,7 @@ const goToPlayer = (roomId: string) => {
 .live-grid-scroll-area {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 6px;
+  padding: 6px 8px;
   --card-radius: 12px;
 }
 
@@ -347,7 +347,7 @@ const goToPlayer = (roomId: string) => {
 
 .card-preview-common {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 8.5;
   position: relative;
   border-radius: var(--card-radius) var(--card-radius) 0 0;
   overflow: hidden;
@@ -392,8 +392,8 @@ const goToPlayer = (roomId: string) => {
 
 .card-info-footer-common {
   display: flex;
-  padding: 8px 10px 10px;
-  gap: 8px;
+  padding: 12px 12px 14px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -402,8 +402,8 @@ const goToPlayer = (roomId: string) => {
 }
 
 .streamer-avatar-common {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid var(--border-color);
@@ -420,10 +420,10 @@ const goToPlayer = (roomId: string) => {
 }
 
 .room-title-common {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--primary-text);
-  margin-bottom: 1px;
+  margin-bottom: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -431,7 +431,7 @@ const goToPlayer = (roomId: string) => {
 }
 
 .nickname-common {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--secondary-text);
   font-weight: 600;
   white-space: nowrap;

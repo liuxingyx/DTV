@@ -158,7 +158,7 @@ const handleFullscreenChange = (isFullscreen: boolean) => {
   background: transparent;
   color: var(--primary-text);
   overflow: hidden;
-  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "OPPO Sans", "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, sans-serif;
   transition: background-color 0.5s ease;
 }
 

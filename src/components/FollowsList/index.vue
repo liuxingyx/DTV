@@ -500,7 +500,9 @@
       }
       return;
     }
-    const y = hoveredItem.offsetTop - listEl.scrollTop;
+    const listRect = listEl.getBoundingClientRect();
+    const itemRect = hoveredItem.getBoundingClientRect();
+    const y = itemRect.top - listRect.top + listEl.scrollTop;
     const h = hoveredItem.offsetHeight;
     listEl.style.setProperty('--hover-opacity', '1');
     hoverTargetY = Math.max(0, y);

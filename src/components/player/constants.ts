@@ -15,8 +15,8 @@ export const DANMU_AREA_OPTIONS = [0.25, 0.5, 0.75] as const;
 export const DANMU_OPACITY_MIN = 0.2;
 export const DANMU_OPACITY_MAX = 1;
 export const PLAYER_VOLUME_STORAGE_KEY = 'dtv_player_volume_v1';
-export const DEFAULT_DANMU_FONT_FAMILY = '"HarmonyOS Sans Bold", "HarmonyOS Sans", "PingFang SC", "Helvetica Neue", Arial, sans-serif';
-export const WINDOWS_DANMU_FONT_FAMILY = '"HarmonyOS Sans Regular", "HarmonyOS Sans", "Microsoft YaHei", "Segoe UI", sans-serif';
+export const DEFAULT_DANMU_FONT_FAMILY = '"OPPO Sans", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif';
+export const WINDOWS_DANMU_FONT_FAMILY = '"OPPO Sans", "Microsoft YaHei", "Segoe UI", sans-serif';
 
 export const sanitizeDanmuArea = (value: number): number => {
   return DANMU_AREA_OPTIONS.reduce((prev, curr) => (Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev), DANMU_AREA_OPTIONS[0]);

@@ -468,6 +468,12 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   user-select: none;
 }
 
+:root[data-theme="light"] .folder-item {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: none;
+}
+
 .folder-item.is-expanded {
   background: var(--color-card);
 }
@@ -503,14 +509,14 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
 .folder-icon {
   width: 16px;
   height: 16px;
-  color: var(--accent-color);
+  color: #9ca3af;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .folder-item.is-expanded .folder-icon {
-  color: var(--accent-color);
+  color: #e5e7eb;
   transform: scale(1.2);
-  filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.3));
+  filter: none;
 }
 
 .folder-name {
@@ -531,13 +537,13 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
 
 .folder-count {
   font-size: 10px;
-  color: var(--accent-color);
+  color: #9ca3af;
   font-weight: 800;
-  background: var(--primary-bg);
+  background: rgba(0, 0, 0, 0.18);
   padding: 2px 8px;
   border-radius: 20px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: none;
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -547,7 +553,7 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   justify-content: center;
   width: 12px;
   height: 12px;
-  color: var(--accent-color);
+  color: #9ca3af;
 }
 
 .folder-content {
@@ -609,21 +615,13 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   background: transparent;
 }
 
-:root[data-theme="dark"] .folder-item :deep(.secondary-row) {
-  color: rgba(213, 221, 230, 0.78);
-}
-
-:root[data-theme="dark"] .folder-item :deep(.streamer-item-content:hover .secondary-row) {
-  color: #e8eef5;
-}
-
 .folder-header:hover .folder-name {
   color: #f8fafc;
 }
 
 .folder-header:hover .folder-count {
   color: #f8fafc;
-  border-color: var(--accent-color);
+  border-color: rgba(255, 255, 255, 0.35);
   background: rgba(255, 255, 255, 0.06);
 }
 
@@ -631,8 +629,27 @@ const getStreamerItemClass = (streamer: FollowedStreamer) => {
   color: #0f172a;
 }
 
+:root[data-theme="light"] .folder-header:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
 :root[data-theme="light"] .folder-header:hover .folder-count {
   color: #0f172a;
   background: rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme="light"] .folder-icon,
+:root[data-theme="light"] .expand-icon {
+  color: #6b7280;
+}
+
+:root[data-theme="light"] .folder-item.is-expanded .folder-icon {
+  color: #111827;
+}
+
+:root[data-theme="light"] .folder-count {
+  color: #6b7280;
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.12);
 }
 </style>

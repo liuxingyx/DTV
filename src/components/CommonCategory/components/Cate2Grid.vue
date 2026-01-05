@@ -177,7 +177,7 @@ const handleToggleInternalExpand = () => {
 
 <style scoped>
 .cate2-container {
-  padding: 10px 12px 6px;
+  padding: 8px 8px 6px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -193,6 +193,22 @@ const handleToggleInternalExpand = () => {
   overflow: hidden;
   transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: height;
+}
+
+.cate2-content::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 18px;
+  background: linear-gradient(to bottom, rgba(245, 245, 247, 0), rgba(245, 245, 247, 0.85));
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+:root[data-theme="dark"] .cate2-content::after {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6));
 }
 
 .cate2-scroll-wrapper {
@@ -213,43 +229,43 @@ const handleToggleInternalExpand = () => {
 
 .cate2-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
   justify-content: flex-start;
   padding-bottom: 12px;
 }
 
 .cate2-card {
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 100px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--hover-bg);
-  border: none;
-  color: var(--secondary-text);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
   box-shadow: none;
 }
 
 .cate2-card:hover {
-  background: var(--hover-bg);
-  color: var(--primary-text);
-  transform: scale(1.05);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: none;
 }
 
 .cate2-card.active {
-  background: var(--glass-bg);
-  color: var(--primary-text);
-  font-weight: 700;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
   box-shadow: none;
 }
 
 .cate2-name {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -266,20 +282,14 @@ const handleToggleInternalExpand = () => {
 
 :root[data-theme="light"] .cate2-card {
   color: #6c7270;
-  background: rgba(244, 245, 246, 0.9);
-  font-weight: 500;
-  border: 1px solid transparent;
 }
 
 :root[data-theme="light"] .cate2-card.active {
   color: #1f2937;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid transparent;
-  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.12);
 }
 
 :root[data-theme="dark"] .cate2-card.active {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.24);
   color: #f6fbf7;
 }
 
@@ -290,33 +300,32 @@ const handleToggleInternalExpand = () => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 14px;
-  font-size: 11px;
+  padding: 6px 16px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--secondary-text);
   cursor: pointer;
-  border-radius: 100px;
-  background: rgba(244, 245, 246, 0.9);
-  border: none;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   transition: all 0.2s ease;
   z-index: 5;
-  box-shadow: none;
+  box-shadow: var(--shadow-low);
 }
 
 .expand-button:hover {
-  background: rgba(244, 245, 246, 0.98);
-  color: #1f2937;
-  border-color: var(--accent-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 :root[data-theme="dark"] .expand-button {
   background: rgba(255, 255, 255, 0.08);
-  color: var(--secondary-text);
+  color: var(--text-secondary);
 }
 
 :root[data-theme="dark"] .expand-button:hover {
   background: rgba(255, 255, 255, 0.16);
-  color: var(--primary-text);
+  color: var(--text-primary);
 }
 
 .expand-icon {
