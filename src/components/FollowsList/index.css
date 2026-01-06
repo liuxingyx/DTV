@@ -11,7 +11,7 @@
   border-radius: 0;
   background: transparent;
   border: none;
-  gap: 12px;
+  gap: 6px;
   user-select: none;
   overflow: hidden;
 }
@@ -21,11 +21,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px 14px;
+  padding: 13px 8px 8px;
   background: transparent;
   border-radius: 0;
   border: none;
   position: relative;
+}
+
+:root[data-platform='darwin'] .list-header {
+  padding-top: 30px;
 }
 
 .list-header::after {

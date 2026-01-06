@@ -63,7 +63,7 @@
 .item-content {
   display: flex;
   align-items: center;
-  padding: 4px 6px;
+  padding: 4px 8.5px;
   gap: 10px;
   flex: 1;
   min-width: 0;
@@ -142,14 +142,18 @@
 }
 
 .nickname {
-  font-weight: 600;
-  color: rgba(29, 29, 31, 0.86);
-  font-size: 13px;
+  font-weight: 700;
+  color: rgba(29, 29, 31, 0.92);
+  font-size: 12.5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   letter-spacing: 0;
   transition: color 0.2s ease;
+}
+
+:root[data-theme="dark"] .nickname {
+  color: rgba(229, 231, 235, 0.92);
 }
 
 .secondary-row {
@@ -165,15 +169,7 @@
 }
 
 .streamer-item-content:hover .nickname {
-  color: rgba(29, 29, 31, 0.92);
-}
-
-:root[data-theme="dark"] .nickname {
-  color: rgba(229, 231, 235, 0.86);
-}
-
-:root[data-theme="dark"] .streamer-item-content:hover .nickname {
-  color: rgba(229, 231, 235, 0.92);
+  color: var(--text-primary);
 }
 
 .streamer-item-content:hover .secondary-row {

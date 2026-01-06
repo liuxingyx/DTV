@@ -17,7 +17,7 @@
         :active-platform="activePlatform"
         @theme-toggle="toggleTheme"
         @platform-change="handlePlatformChange"
-        @select-anchor="handleSelectAnchor"
+        @select-anchor="handleSelectAnchorFromSearch"
       />
 
       <main class="app-body" :class="{ 'app-body--player': isPlayerRoute }">
@@ -41,9 +41,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Navbar from './newui/components/Navbar.vue';
-import Sidebar from './newui/components/Sidebar.vue';
-import type { Platform as UiPlatform } from './newui/types';
+import Navbar from './layout/Navbar.vue';
+import Sidebar from './layout/Sidebar.vue';
+import type { Platform as UiPlatform } from './layout/types';
 import { useThemeStore } from './stores/theme';
 import { useFollowStore } from './store/followStore';
 import { Platform } from './platforms/common/types';
@@ -152,6 +152,17 @@ const handleSelectAnchor = (streamer: FollowedStreamer) => {
   } else {
     router.push({ name: 'douyuPlayer', params: { roomId: streamer.id } });
   }
+};
+
+const handleSelectAnchorFromSearch = (payload: { id: string; platform: Platform; nickname?: string; avatarUrl?: string | null }) => {
+  handleSelectAnchor({
+    id: payload.id,
+    platform: payload.platform,
+    nickname: payload.nickname ?? payload.id,
+    avatarUrl: payload.avatarUrl ?? '',
+    currentRoomId: payload.id,
+    liveStatus: 'UNKNOWN',
+  });
 };
 
 const handleFollowStore = (streamer: FollowedStreamer) => {

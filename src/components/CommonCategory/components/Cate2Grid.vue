@@ -2,7 +2,7 @@
   <div class="cate2-container">
     <div
       class="cate2-content"
-      :class="{ 'is-expanded': isExpandedInternal, 'scrollable': isExpandedInternal && hasMoreRowsInternal, 'animating': isAnimating }"
+      :class="{ 'is-expanded': isExpandedInternal, 'scrollable': isExpandedInternal && hasMoreRowsInternal }"
       ref="cate2ContentRef"
     >
       <div class="cate2-scroll-wrapper" :class="{ 'allow-scroll': isExpandedInternal && hasMoreRowsInternal }">
@@ -67,7 +67,6 @@ const TARGET_CONTENT_HEIGHT_FOR_EXPANDED_MAX_ROWS =
 
 const cate2ContentRef = ref<HTMLElement | null>(null)
 const cate2GridRef = ref<HTMLElement | null>(null)
-const isAnimating = ref(false)
 const isExpandedInternal = ref(props.isExpanded)
 const actualGridScrollHeight = ref(0)
 const hasMoreRowsInternal = ref(false)
@@ -93,13 +92,13 @@ const updateActualGridScrollHeightAndMoreRows = () => {
 
 watch(() => props.cate2List, () => {
   updateActualGridScrollHeightAndMoreRows();
-  animateHeightChange(isExpandedInternal.value);
+  refreshHeightNonAnimated();
 }, { deep: true });
 
 watch(() => props.isExpanded, (newVal) => {
   if (isExpandedInternal.value !== newVal) {
     isExpandedInternal.value = newVal;
-    animateHeightChange(newVal);
+    refreshHeightNonAnimated();
   }
 });
 
@@ -131,46 +130,7 @@ const getCurrentTargetHeight = (expandedState: boolean) => {
   }
 };
 
-const animateHeightChange = (targetExpandedState: boolean) => {
-  if (!cate2ContentRef.value) return;
-  isAnimating.value = true;
-  const content = cate2ContentRef.value;
-  const targetHeightValue = getCurrentTargetHeight(targetExpandedState);
-
-  if (!targetExpandedState && content.style.height === 'auto') {
-    content.style.height = `${content.scrollHeight}px`;
-    requestAnimationFrame(() => {
-      content.style.height = `${targetHeightValue}px`;
-    });
-  } else {
-    content.style.height = `${targetHeightValue}px`;
-  }
-
-  const onTransitionEnd = () => {
-    content.removeEventListener('transitionend', onTransitionEnd);
-    isAnimating.value = false;
-    if (targetExpandedState && !hasMoreRowsInternal.value && props.cate2List.length > 0) {
-        const originalTransition = content.style.transition;
-        content.style.transition = 'none';
-        content.style.height = 'auto';
-        requestAnimationFrame(() => {
-            content.style.transition = originalTransition;
-        });
-    } else if (!targetExpandedState && props.cate2List.length === 0) {
-        content.style.height = `${GRID_INTERNAL_PADDING_BOTTOM + CONTENT_PADDING_BOTTOM}px`;
-    }
-    emit('height-changed');
-  };
-  content.addEventListener('transitionend', onTransitionEnd);
-  setTimeout(() => { 
-    if (isAnimating.value) {
-      onTransitionEnd();
-    }
-  }, 450); 
-};
-
 const handleToggleInternalExpand = () => {
-  if (isAnimating.value) return;
   emit('toggle-expand'); 
 };
 </script>
@@ -191,8 +151,7 @@ const handleToggleInternalExpand = () => {
   height: 0;
   padding-bottom: 6px;
   overflow: hidden;
-  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: height;
+  transition: none;
 }
 
 .cate2-content::after {
@@ -240,7 +199,7 @@ const handleToggleInternalExpand = () => {
   padding: 0 14px;
   border-radius: 16px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,7 +211,6 @@ const handleToggleInternalExpand = () => {
 
 .cate2-card:hover {
   color: var(--text-primary);
-  transform: translateY(-2px);
   box-shadow: none;
 }
 
@@ -330,7 +288,6 @@ const handleToggleInternalExpand = () => {
 
 .expand-icon {
   margin-left: 2px;
-  transition: transform 0.4s cubic-bezier(0.33, 0.66, 0.66, 1);
   width: 12px;
   height: 12px;
 }
@@ -344,9 +301,5 @@ const handleToggleInternalExpand = () => {
   height: 24px;
   object-fit: cover;
   border-radius: 4px;
-  transition: filter 0.2s ease;
-}
-.cate2-content.animating {
-  overflow: hidden !important;
 }
 </style>

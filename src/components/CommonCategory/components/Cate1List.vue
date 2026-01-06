@@ -89,9 +89,9 @@ defineProps<{
   right: 22%;
   bottom: -6px;
   height: 4px;
-  border-radius: 2px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.65);
-  clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+  clip-path: none;
   opacity: 0;
   transform: scaleX(0.6);
   transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);

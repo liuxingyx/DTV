@@ -234,7 +234,29 @@ onBeforeUnmount(() => {
   if (scrollStopTimer !== null) window.clearTimeout(scrollStopTimer);
 });
 
+const lastSelectionKey = ref<string | null>(null);
+
+const getSelectionKey = (category: CategorySelectedEvent | null | undefined): string | null => {
+  if (platformName.value === 'douyu') {
+    if (!douyuCategoryId.value || !douyuCategoryType.value) return `${platformName.value}:none`;
+    return `${platformName.value}:${douyuCategoryType.value}:${douyuCategoryId.value}`;
+  }
+  if (!category?.cate2Href) return `${platformName.value}:none`;
+  return `${platformName.value}:${category.cate2Href}`;
+};
+
 watch([() => props.selectedCategory, () => props.douyuCategory, platformName], ([newCategory]) => {
+  const nextKey = getSelectionKey(newCategory ?? null);
+  const isSameSelection = nextKey === lastSelectionKey.value;
+  lastSelectionKey.value = nextKey;
+
+  if (isSameSelection && rooms.value.length > 0) {
+    nextTick(() => {
+      scheduleEnsureContentFill();
+    });
+    return;
+  }
+
   if (platformName.value === 'douyu') {
     if (douyuCategoryId.value) loadInitialRooms();
     else douyuComposable.rooms.value = [];
