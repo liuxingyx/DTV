@@ -173,7 +173,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, computed, watch, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, computed, watch, onUnmounted } from 'vue';
   import type { FollowedStreamer, LiveStatus } from '../../platforms/common/types';
   import { Platform } from '../../platforms/common/types';
   // import type { DouyuRoomInfo } from '../../platforms/douyu/types'; // No longer needed here
@@ -500,7 +500,9 @@
       }
       return;
     }
-    const y = hoveredItem.offsetTop - listEl.scrollTop;
+    const listRect = listEl.getBoundingClientRect();
+    const itemRect = hoveredItem.getBoundingClientRect();
+    const y = itemRect.top - listRect.top + listEl.scrollTop;
     const h = hoveredItem.offsetHeight;
     listEl.style.setProperty('--hover-opacity', '1');
     hoverTargetY = Math.max(0, y);

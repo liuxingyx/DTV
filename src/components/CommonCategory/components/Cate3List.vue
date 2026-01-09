@@ -55,38 +55,39 @@ const selectAll = () => {
 .cate3-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 2px 12px 0 12px;
-  padding-bottom: 4px;
+  gap: 8px;
+  margin: 6px 8px 0 8px;
+  padding-bottom: 8px;
 }
 
 .cate3-item {
-  height: 30px;
+  height: 28px;
   padding: 0 12px;
-  border-radius: 100px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--hover-bg);
-  border: none;
-  color: var(--secondary-text);
-  box-shadow: none;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-low);
 }
 
 .cate3-item:hover {
-  background: var(--hover-bg);
-  color: var(--primary-text);
-  transform: scale(1.04);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .cate3-item.active {
-  background: var(--glass-bg);
-  color: var(--primary-text);
-  font-weight: 700;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
 }
 
 .loading-cate3 {
@@ -104,15 +105,9 @@ const selectAll = () => {
 
 :root[data-theme="light"] .cate3-item {
   color: #6c7270;
-  background: rgba(244, 245, 246, 0.9);
-  font-weight: 500;
-  border: 1px solid transparent;
 }
 
 :root[data-theme="light"] .cate3-item.active {
   color: #1f2937;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid transparent;
-  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.12);
 }
 </style>

@@ -26,55 +26,84 @@ defineProps<{
 <style scoped>
 .cate1-list-container {
   overflow-x: auto;
-  background: transparent;
   flex-shrink: 0;
-  padding: 6px 0 6px;
+  padding: 4px 0 10px;
   transition: all 0.2s ease;
+  border: none;
+  box-shadow: none;
 }
 
 .cate1-list {
   list-style: none;
   margin: 0;
-  padding: 0 12px;
-  display: flex;
-  gap: 16px;
+  padding: 0 8px 6px;
+  display: inline-flex;
+  gap: 18px;
   flex-wrap: nowrap;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
 }
 
 .cate1-item {
-  height: 38px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 4px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 100px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  font-size: 12.5px;
+  font-weight: 500;
+  border-radius: 8px;
   white-space: nowrap;
   color: var(--secondary-text);
-  background: var(--hover-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: none;
+  background: transparent;
+  border: 1px solid transparent;
   box-shadow: none;
+  position: relative;
 }
 
 .cate1-item:hover {
-  background: var(--hover-bg);
   color: var(--primary-text);
-  transform: translateY(-1px);
+  background: transparent;
 }
 
 .cate1-item.selected {
-  background: var(--glass-bg);
-  color: var(--primary-text);
+  background: transparent;
+  color: var(--text-primary);
   font-weight: 700;
+  transform: translateY(-1px);
+  border-color: transparent;
   box-shadow: none;
 }
 
 .cate1-item.selected {
-  /* theme-aware selected state uses glass background */
+  /* selected state */
+}
+
+.cate1-item::after {
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: -6px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  clip-path: none;
+  opacity: 0;
+  transform: scaleX(0.6);
+  transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cate1-item.selected::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+:root[data-theme="light"] .cate1-item::after {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 :root[data-theme="dark"] .cate1-item {
@@ -82,21 +111,14 @@ defineProps<{
 }
 
 :root[data-theme="light"] .cate1-item {
-  color: #6c7270;
-  background: rgba(244, 245, 246, 0.9);
-  font-weight: 500;
-  border: 1px solid transparent;
+  color: #5f6563;
 }
 
 :root[data-theme="light"] .cate1-item.selected {
   color: #1f2937;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid transparent;
-  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.12);
 }
 
 :root[data-theme="dark"] .cate1-item.selected {
-  background: rgba(255, 255, 255, 0.18);
   color: #f6fbf7;
 }
 

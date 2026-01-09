@@ -26,6 +26,10 @@ import CommonStreamerList from '../components/CommonStreamerList/index.vue'
 import { douyinCategoriesData } from '../platforms/douyin/douyinCategoriesData'
 import type { CategorySelectedEvent } from '../platforms/common/categoryTypes'
 
+defineOptions({
+  name: 'DouyinHomeView',
+})
+
 const categoriesData = douyinCategoriesData
 const selectedCategory = ref<CategorySelectedEvent | null>(null)
 

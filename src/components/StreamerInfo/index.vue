@@ -67,7 +67,9 @@
   <style scoped>
 .streamer-info {
   width: 100%;
-  padding: 24px 30px 22px;
+  max-width: none;
+  margin: 0;
+  padding: 28px 34px 26px;
   box-sizing: border-box;
   position: relative;
   color: var(--primary-text, rgba(244, 247, 255, 0.96));
@@ -101,7 +103,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   z-index: 1;
 }
   
@@ -145,7 +147,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -169,7 +171,7 @@
 .streamer-meta-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 18px;
   flex-wrap: wrap;
   color: rgba(202, 210, 232, 0.82);
 }
@@ -415,6 +417,7 @@
 
 @media (max-width: 1024px) {
   .streamer-info {
+    max-width: 100%;
     padding: 24px 26px 30px;
     margin-bottom: -18px;
     border-bottom-left-radius: 22px;
@@ -422,20 +425,21 @@
   }
 
   .streamer-layout {
-    gap: 16px;
+    gap: 18px;
   }
 }
 
 @media (max-width: 768px) {
   .streamer-info {
-    padding: 20px 20px 24px;
+    max-width: 100%;
+    padding: 22px 20px 26px;
     margin-bottom: -14px;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
   }
 
   .streamer-layout {
-    gap: 14px;
+    gap: 16px;
   }
 
   .avatar-wrapper {

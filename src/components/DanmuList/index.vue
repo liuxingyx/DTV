@@ -209,7 +209,7 @@ const copyDanmaku = async (danmaku: DanmakuUIMessage) => {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     color: var(--primary-text, #e5e9f5);
-    font-family: var(--danmu-font-family, "HarmonyOS Sans Bold", "HarmonyOS Sans", "PingFang SC", "Helvetica Neue", Arial, sans-serif);
+    font-family: var(--danmu-font-family, "OPPO Sans", "Microsoft YaHei", "PingFang SC", "Helvetica Neue", Arial, sans-serif);
     border-radius: 0 16px 16px 0;
     border: 1px solid var(--glass-border);
     border-left: none;
@@ -345,26 +345,13 @@ const copyDanmaku = async (danmaku: DanmakuUIMessage) => {
 }
   
   .danmu-messages-area::-webkit-scrollbar {
-    width: 6px;
+    width: 0;
+    height: 0;
+    display: none;
   }
-  
-  .danmu-messages-area::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 3px;
-  }
-  
-  .danmu-messages-area::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 3px;
-  }
-  
-  .danmu-messages-area::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-  }
-  
+
   .danmu-messages-area {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.06);
+    scrollbar-width: none;
   }
 
   @media (max-width: 1024px) {
@@ -460,21 +447,7 @@ const copyDanmaku = async (danmaku: DanmakuUIMessage) => {
   display: none;
 }
 
-:root[data-theme="light"] .danmu-messages-area {
-  scrollbar-color: rgba(107, 114, 128, 0.7) rgba(229, 231, 235, 0.9);
-}
-
-:root[data-theme="light"] .danmu-messages-area::-webkit-scrollbar-track {
-  background: rgba(229, 231, 235, 0.9);
-}
-
-:root[data-theme="light"] .danmu-messages-area::-webkit-scrollbar-thumb {
-  background-color: rgba(107, 114, 128, 0.7);
-}
-
-:root[data-theme="light"] .danmu-messages-area::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(75, 85, 99, 0.8);
-}
+ 
 
 :root[data-theme="light"] .empty-danmu-placeholder p {
   color: rgba(100, 116, 139, 0.85);

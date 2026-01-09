@@ -21,11 +21,11 @@
       data-tauri-drag-region="none"
     >
       <svg v-if="!isMaximized" class="win-icon" viewBox="0 0 12 12" aria-hidden="true">
-        <rect x="2" y="2" width="8" height="8" />
+        <rect x="2" y="2" width="8" height="8" rx="1" ry="1" />
       </svg>
       <svg v-else class="win-icon is-restore" viewBox="0 0 12 12" aria-hidden="true">
         <path d="M4 2h6v6h-2" />
-        <rect x="2" y="4" width="6" height="6" />
+        <rect x="2" y="4" width="6" height="6" rx="1" ry="1" />
       </svg>
     </button>
     <button
@@ -37,7 +37,7 @@
       data-tauri-drag-region="none"
     >
       <svg class="win-icon" viewBox="0 0 12 12" aria-hidden="true">
-        <path d="M3 3l6 6M9 3L3 9" />
+        <path d="M3.25 3.25l5.5 5.5M8.75 3.25l-5.5 5.5" />
       </svg>
     </button>
   </div>
@@ -132,20 +132,20 @@ onBeforeUnmount(async () => {
   border-radius: 0;
   overflow: hidden;
   height: 32px;
-  width: 132px;
+  width: 138px;
   box-shadow: none;
   -webkit-app-region: no-drag;
 }
 
 .win-control {
-  width: 44px;
+  width: 46px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   transition: background-color 0.12s ease, color 0.12s ease;
   -webkit-app-region: no-drag;
@@ -157,7 +157,7 @@ onBeforeUnmount(async () => {
 }
 
 .win-control:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 .win-control:active {
@@ -183,11 +183,18 @@ onBeforeUnmount(async () => {
   height: 14px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.1;
-  stroke-linecap: square;
-  stroke-linejoin: miter;
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
   shape-rendering: geometricPrecision;
+}
+
+.win-control--close .win-icon {
+  width: 15px;
+  height: 15px;
+  stroke-linecap: square;
+  stroke-width: 1.1;
 }
 
 .win-icon.is-restore path:first-of-type {
